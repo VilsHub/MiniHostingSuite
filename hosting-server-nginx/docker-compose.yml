@@ -1,0 +1,41 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: hosting_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/www:/var/www
+      - /etc/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
+
+  php74:
+    image: php:7.4-fpm
+    container_name: php74
+    volumes:
+      - /var/www:/var/www
+    expose:
+      - "9000"
+
+  php80:
+    image: php:8.0-fpm
+    container_name: php80
+    volumes:
+      - /var/www:/var/www
+    expose:
+      - "9000"
+
+  php82:
+    image: php:8.2-fpm
+    container_name: php82
+    volumes:
+      - /var/www:/var/www
+    expose:
+      - "9000"
+
+networks:
+  default:
+    external: true
+    name: hosting_net

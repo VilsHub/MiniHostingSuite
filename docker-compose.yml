@@ -1,0 +1,63 @@
+services:
+  api:
+    build: ./hosting-backend
+    container_name: hosting_api
+    restart: always
+    ports:
+      - "9000:8000"
+    volumes:
+      - /var/www:/var/www
+      - /etc/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/sftp:/etc/sftp
+    environment:
+      - DB_HOST=db
+      - DB_USER=hosting
+      - DB_PASSWORD=hostingpass
+      - DB_NAME=hosting
+    depends_on:
+      - db
+
+  ui:
+    build: ./hosting-ui
+    container_name: hosting_ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  db:
+    image: mysql:8
+    container_name: hosting_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: hosting
+      MYSQL_USER: hosting
+      MYSQL_PASSWORD: hostingpass
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+  sftp:
+    image: atmoz/sftp
+    container_name: hosting_sftp
+    restart: always
+    ports:
+      - "2222:22"
+    volumes:
+      - /var/www:/home
+      - /etc/sftp/:/etc/sftp
+    depends_on:
+      - api
+
+volumes:
+  db_data:
+
+networks:
+  default:
+    external: true
+    name: hosting_net
