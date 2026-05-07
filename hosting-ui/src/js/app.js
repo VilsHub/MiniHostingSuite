@@ -84,6 +84,7 @@ async function loadSites() {
         <th>CGI</th>
         <th>SFTP</th>
         <th>SSL</th>
+        <th>Delete</th>
       </tr>
   `;
 
