@@ -288,6 +288,94 @@ def create_site(payload: SiteCreate):
 
     return {"message": "Site created"}
 
+@app.delete("/sites/{site_name}")
+def delete_site(site_name: str):
+
+    db = SessionLocal()
+
+    site = db.query(Site).filter(Site.name == site_name).first()
+
+    if not site:
+        raise HTTPException(status_code=404, detail="Site not found")
+
+    # =========================
+    # 1. Remove site files
+    # =========================
+    site_root = f"/var/www/{site_name}"
+
+    if os.path.exists(site_root):
+        shutil.rmtree(site_root)
+
+    # =========================
+    # 2. Remove nginx config
+    # =========================
+    nginx_conf = f"/etc/nginx/conf.d/{site_name}.conf"
+
+    if os.path.exists(nginx_conf):
+        os.remove(nginx_conf)
+
+    # =========================
+    # 3. Remove Let's Encrypt SSL
+    # =========================
+    ssl_paths = [
+        f"/etc/letsencrypt/live/{site.domain}",
+        f"/etc/letsencrypt/archive/{site.domain}",
+        f"/etc/letsencrypt/renewal/{site.domain}.conf"
+    ]
+
+    for path in ssl_paths:
+        if os.path.exists(path):
+
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+
+            else:
+                os.remove(path)
+
+    # =========================
+    # 4. Remove SFTP user
+    # =========================
+    users_conf = "/etc/sftp/users.conf"
+
+    if os.path.exists(users_conf):
+
+        with open(users_conf, "r") as f:
+            lines = f.readlines()
+
+        with open(users_conf, "w") as f:
+            for line in lines:
+                if not line.startswith(f"{site_name}:"):
+                    f.write(line)
+
+        subprocess.run(
+            "docker restart hosting_sftp",
+            shell=True
+        )
+
+    # =========================
+    # 5. Optional DB deletion
+    # =========================
+    # Uncomment if needed
+
+    # run(
+    #     f'mysql -u root -pYOURPASS -e "DROP DATABASE {site.db_name};"'
+    # )
+
+    # =========================
+    # 6. Reload nginx
+    # =========================
+    run("docker exec hosting_nginx nginx -s reload")
+
+    # =========================
+    # 7. Delete DB record
+    # =========================
+    db.delete(site)
+    db.commit()
+
+    return {
+        "message": f"{site_name} deleted successfully"
+    }
+
 @app.post("/sites/{site_name}/ssl")
 def generate_ssl(site_name: str):
     db = SessionLocal()
@@ -317,26 +405,6 @@ def generate_ssl(site_name: str):
         raise HTTPException(status_code=500, detail=f"SSL failed: {str(e)}")
 
     return {"message": "SSL enabled"}
-
-@app.delete("/sites/{site_name}")
-def delete_site(site_name: str):
-    db = SessionLocal()
-    site = db.query(Site).filter(Site.name == site_name).first()
-
-    if not site:
-        raise HTTPException(status_code=404, detail="Site not found")
-
-    # Remove files
-    run(f"rm -rf /var/www/{site_name}")
-
-    # Remove nginx config
-    run(f"rm -f /etc/nginx/conf.d/{site_name}.conf")
-    run("nginx -s reload")
-
-    db.delete(site)
-    db.commit()
-
-    return {"message": "Site deleted"}
 
 @app.put("/sites/{site_name}/php")
 def change_php(site_name: str, version: str):
@@ -466,91 +534,3 @@ def create_folder(site_name: str, payload: FolderCreate):
 def enable_sftp(site_name: str, payload: SFTPRequest):
     add_sftp_user(site_name, payload.password)
     return {"message": "SFTP enabled"}
-
-    @app.delete("/sites/{site_name}")
-def delete_site(site_name: str):
-
-    db = SessionLocal()
-
-    site = db.query(Site).filter(Site.name == site_name).first()
-
-    if not site:
-        raise HTTPException(status_code=404, detail="Site not found")
-
-    # =========================
-    # 1. Remove site files
-    # =========================
-    site_root = f"/var/www/{site_name}"
-
-    if os.path.exists(site_root):
-        shutil.rmtree(site_root)
-
-    # =========================
-    # 2. Remove nginx config
-    # =========================
-    nginx_conf = f"/etc/nginx/conf.d/{site_name}.conf"
-
-    if os.path.exists(nginx_conf):
-        os.remove(nginx_conf)
-
-    # =========================
-    # 3. Remove Let's Encrypt SSL
-    # =========================
-    ssl_paths = [
-        f"/etc/letsencrypt/live/{site.domain}",
-        f"/etc/letsencrypt/archive/{site.domain}",
-        f"/etc/letsencrypt/renewal/{site.domain}.conf"
-    ]
-
-    for path in ssl_paths:
-        if os.path.exists(path):
-
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-
-            else:
-                os.remove(path)
-
-    # =========================
-    # 4. Remove SFTP user
-    # =========================
-    users_conf = "/etc/sftp/users.conf"
-
-    if os.path.exists(users_conf):
-
-        with open(users_conf, "r") as f:
-            lines = f.readlines()
-
-        with open(users_conf, "w") as f:
-            for line in lines:
-                if not line.startswith(f"{site_name}:"):
-                    f.write(line)
-
-        subprocess.run(
-            "docker restart hosting_sftp",
-            shell=True
-        )
-
-    # =========================
-    # 5. Optional DB deletion
-    # =========================
-    # Uncomment if needed
-
-    # run(
-    #     f'mysql -u root -pYOURPASS -e "DROP DATABASE {site.db_name};"'
-    # )
-
-    # =========================
-    # 6. Reload nginx
-    # =========================
-    run("docker exec hosting_nginx nginx -s reload")
-
-    # =========================
-    # 7. Delete DB record
-    # =========================
-    db.delete(site)
-    db.commit()
-
-    return {
-        "message": f"{site_name} deleted successfully"
-    }
