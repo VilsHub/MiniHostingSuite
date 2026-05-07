@@ -42,3 +42,8 @@ td, th {
   border: 1px solid #444;
   padding: 10px;
 }
+
+.danger {
+  background: red;
+  color: white;
+}

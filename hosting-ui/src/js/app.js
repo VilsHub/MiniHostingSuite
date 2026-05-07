@@ -98,6 +98,7 @@ async function loadSites() {
         <td><button onclick="changePHP('${site.name}')">Change PHP</button></td>
         <td><button onclick="createSFTP('${site.name}')">Enable SFTP</button></td>
         <td><button onclick="enableSSL('${site.name}')">Enable SSL</button></td>
+        <td><button onclick="deleteSite('${site.name}')" class="danger">Delete</button></td>
       </tr>
     `;
   });
@@ -133,6 +134,25 @@ async function createSite() {
   });
 
   alert("Site created");
+  loadSites();
+}
+
+async function deleteSite(siteName) {
+
+  const confirmed = confirm(
+    `Delete ${siteName} and all data?`
+  );
+
+  if (!confirmed) return;
+
+  const res = await fetch(`${API}/sites/${siteName}`, {
+    method: "DELETE"
+  });
+
+  const data = await res.json();
+
+  alert(data.message);
+
   loadSites();
 }
 
