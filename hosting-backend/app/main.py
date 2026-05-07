@@ -271,6 +271,10 @@ def create_site(payload: SiteCreate):
     os.makedirs(site_path, exist_ok=True)
     setup_site_filesystem(payload.site_name)
 
+    # Add default index.php
+    with open(os.path.join(site_path, "index.php"), "w") as f:
+        f.write("<?php phpinfo(); ?>")
+
     # 2. Create nginx config, ✅ pass php version
     create_nginx_config(payload.domain, payload.site_name, payload.php_version)
 

@@ -12,7 +12,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
 
   php74:
-    image: php:7.4-fpm
+    build: ./php74
     container_name: php74
     volumes:
       - /var/www:/var/www
@@ -20,7 +20,7 @@ services:
       - "9000"
 
   php80:
-    image: php:8.0-fpm
+    build: ./php80
     container_name: php80
     volumes:
       - /var/www:/var/www
@@ -28,7 +28,7 @@ services:
       - "9000"
 
   php81:
-    image: php:8.1-fpm
+    build: ./php81
     container_name: php81
     volumes:
       - /var/www:/var/www
@@ -36,7 +36,7 @@ services:
       - "9000"
 
   php82:
-    image: php:8.2-fpm
+    build: ./php82
     container_name: php82
     volumes:
       - /var/www:/var/www
