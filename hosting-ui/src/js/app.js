@@ -19,6 +19,7 @@ function showCreate() {
     <label>PHP Version:</label><br>
     <select id="php_version">
       <option value="8.2">PHP 8.2</option>
+      <option value="8.1">PHP 8.1</option>
       <option value="8.0">PHP 8.0</option>
       <option value="7.4">PHP 7.4</option>
     </select><br><br>
@@ -57,7 +58,7 @@ function goBack() {
 }
 
 async function changePHP(siteName) {
-  const version = prompt("Enter PHP version (7.4, 8.0, 8.2):");
+  const version = prompt("Enter PHP version (7.4, 8.0, 8.1 8.2):");
 
   await fetch(`${API}/sites/${siteName}/php?version=${version}`, {
     method: "PUT"
