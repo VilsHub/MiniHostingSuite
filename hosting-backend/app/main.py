@@ -103,6 +103,7 @@ def create_nginx_config(domain: str, site_name: str, php_version: str = "8.2"):
 server {{
     listen 80;
     server_name {domain};
+    limit_req zone=general burst=20 nodelay;
 
     root /var/www/{site_name}/html;
     index index.php index.html;
@@ -141,7 +142,7 @@ def create_ssl_config(domain, site_name, php_version="8.2"):
 server {{
     listen 80;
     server_name {domain};
-
+    limit_req zone=general burst=20 nodelay;
     location /.well-known/acme-challenge/ {{
         root /var/www/certbot;
     }}
@@ -154,7 +155,7 @@ server {{
 server {{
     listen 443 ssl;
     server_name {domain} www.{domain};
-
+    limit_req zone=general burst=20 nodelay;
     ssl_certificate /etc/letsencrypt/live/{domain}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/{domain}/privkey.pem;
 
