@@ -4,6 +4,7 @@ services:
     container_name: hosting_nginx
     restart: always
     ports:
+      - "80:80"
       - "443:443"
     volumes:
       - /var/www:/var/www
