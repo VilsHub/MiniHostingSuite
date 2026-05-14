@@ -8,7 +8,7 @@ services:
       - "443:443"
     volumes:
       - /var/www:/var/www
-      - /etc/nginx/conf.d/custom.conf:/etc/nginx/conf.d/custom.conf
+      - /etc/nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt
     
     depends_on: 
