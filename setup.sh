@@ -31,7 +31,7 @@ echo "limit_req_zone $binary_remote_addr zone=general:10m rate=10r/s;" >> /etc/n
 
 # Setup hosting suite apps
 echo "Setting up the hosting suite apps..."
-sudo docker compose docker-compose.yml up -d --build
+sudo docker compose up -d --build
 
 echo -e "Setting up the hosting suite apps... Done! \n"
 
