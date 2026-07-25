@@ -3,26 +3,26 @@ echo "Please specify the backend IP address for the hosting suite UI (e.g., 192.
 read backend
 
 # Make the directories:
-mkdir -p /etc/php74/fpm
-mkdir -p /etc/php80/fpm
-mkdir -p /etc/php81/fpm
-mkdir -p /etc/php82/fpm
-mkdir -p /etc/php82/ini/
-mkdir -p /etc/php81/ini/
-mkdir -p /etc/php80/ini/
-mkdir -p /etc/php74/ini/
-mkdir -p /etc/nginx/conf.d/ 
+sudo mkdir -p /etc/php74/fpm
+sudo mkdir -p /etc/php80/fpm
+sudo mkdir -p /etc/php81/fpm
+sudo mkdir -p /etc/php82/fpm
+sudo mkdir -p /etc/php82/ini/
+sudo mkdir -p /etc/php81/ini/
+sudo mkdir -p /etc/php80/ini/
+sudo mkdir -p /etc/php74/ini/
+sudo mkdir -p /etc/nginx/conf.d/ 
 
 # Create the files
-touch /etc/php74/ini/custom.ini
-touch /etc/php80/ini/custom.ini 
-touch /etc/php81/ini/custom.ini
-touch /etc/php82/ini/custom.ini
-touch /etc/php74/fpm/www.conf
-touch /etc/php80/fpm/www.conf   
-touch /etc/php81/fpm/www.conf
-touch /etc/php82/fpm/www.conf
-touch /etc/nginx/conf.d/default.conf # to avoid nginx crashing
+sudo touch /etc/php74/ini/custom.ini
+sudo touch /etc/php80/ini/custom.ini 
+sudo touch /etc/php81/ini/custom.ini
+sudo touch /etc/php82/ini/custom.ini
+sudo touch /etc/php74/fpm/www.conf
+sudo touch /etc/php80/fpm/www.conf   
+sudo touch /etc/php81/fpm/www.conf
+sudo touch /etc/php82/fpm/www.conf
+sudo touch /etc/nginx/conf.d/default.conf # to avoid nginx crashing
 
 # Replace the backend IP address in the hosting-ui/src/js/app.js file
 sed -i "s/{{backend}}/$backend/g" hosting-ui/src/js/app.js
