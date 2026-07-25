@@ -31,7 +31,7 @@ sed -i "s/{{backend}}/$backend/g" hosting-ui/src/js/app.js
 sudo docker network create hosting_net &>/dev/null
 
 # to be placed in the file stored in /etc/nginx/conf.d/custom.conf [Vital to stop Nginx crashing]
-echo "limit_req_zone $binary_remote_addr zone=general:10m rate=10r/s;" >> /etc/nginx/conf.d/custom.conf
+echo 'limit_req_zone $binary_remote_addr zone=general:10m rate=10r/s;' | sudo tee /etc/nginx/conf.d/custom.conf
 
 # Setup hosting suite apps
 echo "Setting up the hosting suite apps..."
