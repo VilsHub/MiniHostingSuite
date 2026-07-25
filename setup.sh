@@ -24,7 +24,7 @@ touch /etc/nginx/conf.d/default.conf # to avoid nginx crashing
 
 
 # Create Docker Network
-sudo docker network create hosting_net
+sudo docker network create hosting_net &>/dev/null
 
 # to be placed in the file stored in /etc/nginx/conf.d/custom.conf [Vital to stop Nginx crashing]
 echo "limit_req_zone $binary_remote_addr zone=general:10m rate=10r/s;" >> /etc/nginx/conf.d/custom.conf
@@ -36,5 +36,5 @@ sudo docker compose docker-compose.yml up -d --build
 echo -e "Setting up the hosting suite apps... Done! \n"
 
 echo -e "Setting up server and CGI apps... \n"
-docker compose -f hosting-server-nginx/docker-compose.yml up -d --build
+sudo docker compose -f hosting-server-nginx/docker-compose.yml up -d --build
 
