@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "Please specify the backend IP address for the hosting suite UI (e.g., 192.168.1.100):"
+read backend
 
 # Make the directories:
 mkdir -p /etc/php74/fpm
@@ -22,6 +24,8 @@ touch /etc/php81/fpm/www.conf
 touch /etc/php82/fpm/www.conf
 touch /etc/nginx/conf.d/default.conf # to avoid nginx crashing
 
+# Replace the backend IP address in the hosting-ui/src/js/app.js file
+sed -i "s/{{backend}}/$backend/g" hosting-ui/src/js/app.js
 
 # Create Docker Network
 sudo docker network create hosting_net &>/dev/null

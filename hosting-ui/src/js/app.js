@@ -1,4 +1,4 @@
-const backend = "51.142.251.103"
+const backend = "{{backend}}";
 const API = "http://"+backend+":9000";
 let currentPath = "";
 
