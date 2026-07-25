@@ -5,7 +5,7 @@ services:
     restart: always
     ports:
       - "80:80"
-      - "443:443"
+      - "443:80"
     volumes:
       - /var/www:/var/www
       - /etc/nginx/conf.d:/etc/nginx/conf.d
@@ -16,7 +16,6 @@ services:
       - php80
       - php81
       - php82
-
 
   php74:
     build: ./cgi/php/php74
@@ -62,24 +61,3 @@ networks:
   default:
     external: true
     name: hosting_net
-
-
-# Make the directories:
-# mkdir -p /etc/php74/fpm
-# mkdir -p /etc/php80/fpm
-# mkdir -p /etc/php81/fpm
-# mkdir -p /etc/php82/fpm
-# mkdir -p /etc/php82/ini/
-# mkdir -p /etc/php81/ini/
-# mkdir -p /etc/php80/ini/
-# mkdir -p /etc/php74/ini/
-
-# Create the files
-# touch /etc/php74/ini/custom.ini
-# touch /etc/php80/ini/custom.ini 
-# touch /etc/php81/ini/custom.ini
-# touch /etc/php82/ini/custom.ini
-# touch /etc/php74/fpm/www.conf
-# touch /etc/php80/fpm/www.conf   
-# touch /etc/php81/fpm/www.conf
-# touch /etc/php82/fpm/www.conf
