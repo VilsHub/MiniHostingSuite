@@ -2,6 +2,32 @@
 echo "Please specify the backend IP address for the hosting suite UI (e.g., 192.168.1.100):"
 read backend
 
+echo "Setup Docker? (y/n):"
+read setup_docker
+
+if [ "$setup_docker" = "y" ]; then
+    echo "Setting up Docker..."
+    sudo apt update
+    sudo apt install -y docker.io 
+
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | \
+    tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    apt update
+
+    apt install docker-compose-plugin -y
+
+    echo "Docker setup complete."
+else
+    echo "Skipping Docker setup."
+fi
+
 # Make the directories:
 sudo mkdir -p /etc/php74/fpm
 sudo mkdir -p /etc/php80/fpm
