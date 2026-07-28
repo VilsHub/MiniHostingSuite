@@ -40,14 +40,18 @@ sudo mkdir -p /etc/php74/ini/
 sudo mkdir -p /etc/nginx/conf.d/ 
 
 # Create the files
-sudo touch /etc/php74/ini/custom.ini
-sudo touch /etc/php80/ini/custom.ini 
-sudo touch /etc/php81/ini/custom.ini
-sudo touch /etc/php82/ini/custom.ini
+sudo cp hosting-server-nginx/configs/php/config-ini/custom.ini /etc/php74/ini/custom.ini
+sudo cp hosting-server-nginx/configs/php/config-ini/custom.ini /etc/php80/ini/custom.ini
+sudo cp hosting-server-nginx/configs/php/config-ini/custom.ini /etc/php81/ini/custom.ini
+sudo cp hosting-server-nginx/configs/php/config-ini/custom.ini /etc/php82/ini/custom.ini
 sudo touch /etc/php74/fpm/www.conf
-sudo touch /etc/php80/fpm/www.conf   
+sudo cp hosting-server-nginx/configs/php/config-conf/zzzz-custom.conf /etc/php74/fpm/zzzz-custom.conf
+sudo touch /etc/php80/fpm/www.conf
+sudo cp hosting-server-nginx/configs/php/config-conf/zzzz-custom.conf /etc/php80/fpm/zzzz-custom.conf
 sudo touch /etc/php81/fpm/www.conf
+sudo cp hosting-server-nginx/configs/php/config-conf/zzzz-custom.conf /etc/php81/fpm/zzzz-custom.conf
 sudo touch /etc/php82/fpm/www.conf
+sudo cp hosting-server-nginx/configs/php/config-conf/zzzz-custom.conf /etc/php82/fpm/zzzz-custom.conf
 sudo touch /etc/nginx/conf.d/default.conf # to avoid nginx crashing
 
 # Replace the backend IP address in the hosting-ui/src/js/app.js file
